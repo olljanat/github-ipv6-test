@@ -10,10 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          sysctl net.ipv6.conf.all.disable_ipv6=0
-          ip addr add fd:1::100/64 dev eth0
-          echo {"ipv6": true, "fixed-cidr-v6": "fd:2::/64"} > /etc/docker/daemon.json
-          kill -SIGHUP $(pidof dockerd)
+          sudo sysctl net.ipv6.conf.all.disable_ipv6=0
+          sudo ip addr add fd:1::100/64 dev eth0
+          echo {"ipv6": true, "fixed-cidr-v6": "fd:2::/64"} | sudo tee -a /etc/docker/daemon.json
+          sudo kill -SIGHUP $(pidof dockerd)
           sleep 10s
           docker network inspect bridge
 
