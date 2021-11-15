@@ -9,7 +9,14 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      
+      - run: |
+          sysctl net.ipv6.conf.all.disable_ipv6=0
+          ip addr add fd:1::100/64 dev eth0
+          echo {"ipv6": true, "fixed-cidr-v6": "fd:2::/64"} > /etc/docker/daemon.json
+          kill -SIGHUP $(pidof dockerd)
+          sleep 10s
+          docker network inspect bridge
+
       - name: Public IP
         id: ip
         uses: haythem/public-ip@v1.2
